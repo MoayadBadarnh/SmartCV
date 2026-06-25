@@ -179,5 +179,102 @@ progressContainer.addEventListener("click", (e) => {
 
 audio.addEventListener("ended", () => { playBtn.textContent = "▶"; });
 </script>
+    <!-- زر Generate -->
+<div class="glass-box" style="text-align:center; margin: 20px auto; width:65%">
+    <h2>🚀 Get Your CV Link</h2>
+    
+    <div class="input-group" style="width:80%; margin: 15px auto">
+        <label>Choose Your Username</label>
+        <input type="text" id="cvUsername" placeholder="ahmed-ali">
+    </div>
+
+    <button class="btn-primary" onclick="generateCV()" id="generateBtn">
+        🚀 Generate My CV Link
+    </button>
+
+    <div id="resultBox" style="display:none; margin-top:20px">
+        <p style="color:#a4b465; margin-bottom:10px">✅ Your CV is live at:</p>
+        <a id="cvLink" href="#" target="_blank" 
+           style="color:#fff; font-size:16px; word-break:break-all"></a>
+    </div>
+</div>
+
+<script>
+async function generateCV() {
+    const username = document.getElementById("cvUsername").value.trim();
+    if (!username) { alert("اكتب username أولاً!"); return; }
+
+    const btn = document.getElementById("generateBtn");
+    btn.textContent = "⏳ جاري الإنشاء...";
+    btn.disabled = true;
+
+    const name    = document.getElementById("displayName").innerText;
+    const title   = document.getElementById("displayTitle").innerText;
+    const about   = document.getElementById("aboutMe").value;
+    const projects = [...document.querySelectorAll(".project-input")]
+        .map(i => i.value).filter(Boolean);
+
+    const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${name} — CV</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:#1a1f15;font-family:'Poppins',sans-serif;color:#fff}
+    header{text-align:center;padding:60px 20px 30px}
+    h1{font-size:40px}
+    .subtitle{color:#a4b465;font-size:20px;margin-top:8px}
+    section{width:65%;margin:30px auto;background:rgba(255,255,255,0.07);
+            backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.15);
+            border-radius:18px;padding:40px}
+    h2{color:#a4b465;margin-bottom:16px}
+    p{line-height:1.8;color:#ddd}
+    .project{background:rgba(255,255,255,0.1);padding:12px;
+             border-radius:10px;margin:8px 0;color:#fff}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>${name}</h1>
+    <p class="subtitle">${title}</p>
+  </header>
+  <section>
+    <h2>About Me</h2>
+    <p>${about}</p>
+  </section>
+  <section>
+    <h2>My Work</h2>
+    ${projects.map(p => `<div class="project">${p}</div>`).join("")}
+  </section>
+</body>
+</html>`;
+
+    try {
+        const res = await fetch("https://smartcv.mwydbdarnt.workers.dev", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, htmlContent }),
+        });
+
+        const data = await res.json();
+
+        if (data.url) {
+            document.getElementById("resultBox").style.display = "block";
+            const link = document.getElementById("cvLink");
+            link.href = data.url;
+            link.textContent = data.url;
+        } else {
+            alert("خطأ: " + data.error);
+        }
+    } catch (e) {
+        alert("حدث خطأ، تأكد من الاتصال");
+    } finally {
+        btn.textContent = "🚀 Generate My CV Link";
+        btn.disabled = false;
+    }
+}
+</script>
 </body>
 </html>
