@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCV</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/image.png">
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ===== خلفية الفيديو ===== -->
+<video class="video-background" autoplay muted loop playsinline>
+    <source src="vedio/vedio.mp4" type="video/mp4">
+</video>
+<div class="overlay"></div>
+
+<!-- ===== لوحة التحرير (يسار) ===== -->
+<aside class="editor-panel">
+    <h3 class="editor-title">✏️ Edit Your CV</h3>
+
+    <div class="input-group">
+        <label>Profile Photo</label>
+        <label class="file-label" for="profileImage">📷 Choose Photo</label>
+        <input type="file" id="profileImage" accept="image/*" style="display:none">
+    </div>
+
+    <div class="input-group">
+        <label>Full Name</label>
+        <input type="text" id="fullName" placeholder="Moayad Al-Badarneh">
+    </div>
+
+    <div class="input-group">
+        <label>Your Title</label>
+        <input type="text" id="titleInput" placeholder="Full-Stack Developer">
+    </div>
+
+    <div class="input-group">
+        <label>LinkedIn URL</label>
+        <input type="url" id="linkedinInput" placeholder="https://linkedin.com/in/...">
+    </div>
+
+    <div class="input-group">
+        <label>About Section ID (optional)</label>
+        <input type="text" id="aboutInput" placeholder="#about" value="#about">
+    </div>
+
+    <div class="input-group">
+        <label>Work Section ID (optional)</label>
+        <input type="text" id="workInput" placeholder="#myWork" value="#myWork">
+    </div>
+
+    <button class="btn-primary" onclick="updateAll()">▶ Apply Changes</button>
+</aside>
+
+<!-- ===== معاينة السيرة ===== -->
+<main class="cv-preview">
+
+    <!-- Header -->
+    <header>
+        <div class="profile-container">
+            <img id="previewImg" class="profile-img" src="https://ui-avatars.com/api/?name=Your+Name&background=535d0a&color=fff&size=150" alt="Profile">
+        </div>
+
+        <!-- مشغل الصوت -->
+        <div class="audio-player">
+            <button id="playBtn">▶</button>
+            <div class="progress-container" id="progressContainer">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+
+        <audio id="audio">
+            <source src="voice/beard.mp3" type="audio/mpeg">
+        </audio>
+
+        <h2 class="profile-name" id="displayName">Your Name</h2>
+        <p class="profile-title" id="displayTitle">Your Title</p>
+
+        <nav class="navigation">
+            <ul>
+                <li><a href="#about" id="aboutLink">About Me</a></li>
+                <li><a href="#" id="linkedinLink" target="_blank">LinkedIn</a></li>
+                <li><a href="#myWork" id="workLink">My Work</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <hr/>
+
+    <!-- About Me -->
+    <section id="about" class="glass-box">
+        <h2>About Me</h2>
+        <textarea id="aboutMe" class="about-input" placeholder="Write something about yourself..."></textarea>
+    </section>
+
+    <hr/>
+
+    <!-- My Work -->
+    <section id="myWork" class="glass-box">
+        <h2>My Work</h2>
+        <div id="projectsContainer">
+            <input type="text" class="project-input" placeholder="Project Name">
+        </div>
+        <button class="btn-secondary" id="addProjectBtn">+ Add Project</button>
+    </section>
+
+</main>
+
+<!-- ===== Scripts ===== -->
+<script>
+// ---- صورة البروفايل ----
+document.getElementById("profileImage").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        document.getElementById("previewImg").src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+});
+
+// ---- تحديث كل شيء دفعة واحدة ----
+function updateAll() {
+    const name  = document.getElementById("fullName").value.trim();
+    const title = document.getElementById("titleInput").value.trim();
+
+    document.getElementById("displayName").innerText  = name  || "Your Name";
+    document.getElementById("displayTitle").innerText = title || "Your Title";
+
+    const linkedin = document.getElementById("linkedinInput").value.trim();
+    document.getElementById("linkedinLink").href = linkedin || "#";
+
+    document.getElementById("aboutLink").href =
+        document.getElementById("aboutInput").value.trim() || "#about";
+
+    document.getElementById("workLink").href =
+        document.getElementById("workInput").value.trim() || "#myWork";
+}
+
+// ---- تحديث فوري عند الكتابة ----
+document.getElementById("fullName").addEventListener("input", () => {
+    const v = document.getElementById("fullName").value.trim();
+    document.getElementById("displayName").innerText = v || "Your Name";
+});
+document.getElementById("titleInput").addEventListener("input", () => {
+    const v = document.getElementById("titleInput").value.trim();
+    document.getElementById("displayTitle").innerText = v || "Your Title";
+});
+
+// ---- إضافة مشاريع ----
+document.getElementById("addProjectBtn").addEventListener("click", () => {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "Project Name";
+    input.classList.add("project-input");
+    document.getElementById("projectsContainer").appendChild(input);
+});
+
+// ---- مشغل الصوت ----
+const audio             = document.getElementById("audio");
+const playBtn           = document.getElementById("playBtn");
+const progressEl        = document.getElementById("progress");
+const progressContainer = document.getElementById("progressContainer");
+
+playBtn.addEventListener("click", () => {
+    if (audio.paused) { audio.play();  playBtn.textContent = "❚❚"; }
+    else              { audio.pause(); playBtn.textContent = "▶";  }
+});
+
+audio.addEventListener("timeupdate", () => {
+    if (!audio.duration) return;
+    progressEl.style.width = (audio.currentTime / audio.duration * 100) + "%";
+});
+
+progressContainer.addEventListener("click", (e) => {
+    audio.currentTime = (e.offsetX / progressContainer.clientWidth) * audio.duration;
+});
+
+audio.addEventListener("ended", () => { playBtn.textContent = "▶"; });
+</script>
+</body>
+</html>
