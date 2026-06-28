@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Name — CV</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:#1a1f15;font-family:'Poppins',sans-serif;color:#fff;min-height:100vh}
+    header{text-align:center;padding:60px 20px 30px;display:flex;flex-direction:column;align-items:center;gap:12px}
+    .profile-container{position:relative;width:154px;height:154px;display:flex;justify-content:center;align-items:center}
+    .profile-container::before{content:"";position:absolute;width:174px;height:174px;border-radius:50%;background:conic-gradient(#a4b465,#535d0a,#a4b465);animation:spin 3s linear infinite;z-index:0}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .profile-img{width:150px;height:150px;border-radius:50%;object-fit:cover;position:relative;z-index:1;border:3px solid #1a1f15}
+    .profile-name{font-size:40px;font-weight:700;color:#fff}
+    .profile-title{color:#a4b465;font-size:18px;font-weight:500;letter-spacing:1px}
+    nav ul{display:flex;list-style:none;gap:2rem;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);padding:12px 32px;border-radius:30px;border:1px solid rgba(164,180,101,.2)}
+    nav a{color:#e8f0c8;text-decoration:none;font-weight:600;font-size:14px}
+    nav a:hover{color:#a4b465}
+    hr{border:none;height:2px;width:70%;margin:40px auto;background:linear-gradient(90deg,transparent,#a4b465,transparent);opacity:.6}
+    .glass-box{width:65%;margin:0 auto 60px;padding:40px;border-radius:18px;background:rgba(255,255,255,.07);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.15);text-align:center}
+    .glass-box h2{font-size:22px;font-weight:700;color:#a4b465;margin-bottom:20px;text-transform:uppercase}
+    .glass-box p{line-height:1.8;color:#ddd}
+    .project{background:rgba(255,255,255,.1);padding:12px 16px;border-radius:10px;margin:8px 0;color:#fff;text-align:left}
+    @media(max-width:768px){.glass-box{width:90%;padding:24px}.profile-name{font-size:28px}nav ul{gap:1rem;padding:10px 20px;flex-wrap:wrap;justify-content:center}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="profile-container">
+      <img class="profile-img" src="https://ui-avatars.com/api/?name=Your+Name&background=535d0a&color=fff&size=150" alt="Your Name">
+    </div>
+    <h1 class="profile-name">Your Name</h1>
+    <p class="profile-title">Your Title</p>
+    <nav><ul>
+      <li><a href="#about">About Me</a></li>
+      <li><a href="#myWork">My Work</a></li>
+    </ul></nav>
+  </header>
+  <hr/>
+  <section id="about" class="glass-box">
+    <h2>About Me</h2>
+    <p>No info yet.</p>
+  </section>
+  <hr/>
+  <section id="myWork" class="glass-box">
+    <h2>My Work</h2>
+    <p>No projects added yet.</p>
+  </section>
+</body>
+</html>
