@@ -15,7 +15,7 @@ body {
     display: flex;
 }
 
-/* ===== خلفية الفيديو ===== */
+/* ===== خلفية الفيديو (اختياري - يظهر فقط إذا رفع المستخدم فيديو) ===== */
 .video-background {
     position: fixed;
     inset: 0;
@@ -23,6 +23,7 @@ body {
     height: 100%;
     object-fit: cover;
     z-index: -2;
+    display: none; /* مخفي افتراضياً، يظهر فقط عند رفع فيديو مخصص */
 }
 
 .overlay {
@@ -32,12 +33,38 @@ body {
     z-index: -1;
 }
 
+/* ===== خلفيات متحركة حسب المجال (بديل الفيديو، Static بالكامل) ===== */
+.theme-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    background-size: 400% 400%;
+    animation: gradientFlow 18s ease infinite;
+}
+@keyframes gradientFlow {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.theme-general .theme-bg      { background-image: linear-gradient(135deg,#1a1f15,#535d0a,#a4b465,#1a1f15); }
+.theme-medical .theme-bg      { background-image: linear-gradient(135deg,#012a2d,#0f6d7a,#3fd0c9,#012a2d); }
+.theme-restaurant .theme-bg   { background-image: linear-gradient(135deg,#2b0a05,#7a1f0f,#d97b29,#2b0a05); }
+.theme-engineering .theme-bg  { background-image: linear-gradient(135deg,#1c1c1c,#3d3d3d,#e08b2f,#1c1c1c); }
+.theme-arts .theme-bg         { background-image: linear-gradient(135deg,#1a032b,#5c1a7a,#d63bce,#1a032b); }
+.theme-it .theme-bg           { background-image: linear-gradient(135deg,#020c14,#0a3b4d,#12e0c4,#020c14); }
+.theme-business .theme-bg     { background-image: linear-gradient(135deg,#0a0e1a,#1b2a4a,#c9a24b,#0a0e1a); }
+
+/* عندما يرفع المستخدم فيديو مخصص نخفي التدرج */
+body.has-custom-video .theme-bg { display: none; }
+body.has-custom-video .video-background { display: block; }
+
 /* ===== لوحة التحرير ===== */
 .editor-panel {
     position: fixed;
     top: 0;
     left: 0;
-    width: 280px;
+    width: 300px;
     height: 100vh;
     overflow-y: auto;
     background: rgba(10, 12, 8, 0.82);
@@ -59,6 +86,18 @@ body {
     letter-spacing: 0.5px;
 }
 
+.section-label {
+    color: #7c8a55;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 18px 0 8px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(164, 180, 101, 0.15);
+}
+.section-label:first-of-type { border-top: none; padding-top: 0; margin-top: 4px; }
+
 .input-group {
     display: flex;
     flex-direction: column;
@@ -74,7 +113,8 @@ body {
     letter-spacing: 0.5px;
 }
 
-.input-group input {
+.input-group input,
+.input-group select {
     padding: 9px 12px;
     border-radius: 8px;
     border: 1px solid rgba(164, 180, 101, 0.25);
@@ -83,14 +123,18 @@ body {
     color: #f0f0f0;
     font-size: 13px;
     transition: border-color 0.2s;
+    font-family: inherit;
 }
 
-.input-group input:focus {
+.input-group input:focus,
+.input-group select:focus {
     border-color: #a4b465;
     background: rgba(164, 180, 101, 0.08);
 }
 
 .input-group input::placeholder { color: #666; }
+
+.input-group select option { background: #1a1f15; color: #f0f0f0; }
 
 .file-label {
     display: inline-block;
@@ -124,7 +168,7 @@ body {
 
 /* ===== منطقة المعاينة ===== */
 .cv-preview {
-    margin-left: 280px;
+    margin-left: 300px;
     flex: 1;
     min-height: 100vh;
     position: relative;
@@ -193,6 +237,33 @@ header {
     letter-spacing: 1px;
 }
 
+/* ===== أيقونات التواصل الاجتماعي ===== */
+.social-icons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(164, 180, 101, 0.12);
+    border: 1px solid rgba(164, 180, 101, 0.35);
+    color: #d4e080;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.15s, background 0.2s;
+}
+.social-icon:hover { transform: translateY(-2px); background: rgba(164, 180, 101, 0.28); }
+.social-icon svg { width: 18px; height: 18px; fill: currentColor; }
+
 /* ===== مشغل الصوت ===== */
 .audio-player {
     display: flex;
@@ -204,7 +275,7 @@ header {
     border: 1px solid rgba(164, 180, 101, 0.35);
     padding: 7px 16px;
     border-radius: 30px;
-    width: 180px;
+    width: 200px;
 }
 
 #audio { display: none; }
@@ -235,6 +306,19 @@ header {
     border-radius: 5px;
     transition: width 0.1s linear;
 }
+
+.btn-ai-voice {
+    padding: 7px 16px;
+    border-radius: 30px;
+    background: rgba(83, 93, 10, 0.55);
+    border: 1px solid rgba(164, 180, 101, 0.35);
+    color: #d4e080;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+}
+.btn-ai-voice:hover { background: rgba(164, 180, 101, 0.28); }
 
 /* ===== Navigation ===== */
 .navigation ul {
@@ -314,10 +398,16 @@ hr {
 .about-input::placeholder { color: #888; }
 
 /* ===== Projects ===== */
-.project-input {
-    width: 100%;
-    padding: 12px 16px;
+.project-row {
+    display: flex;
+    gap: 8px;
     margin: 8px 0;
+    align-items: center;
+}
+
+.project-input {
+    flex: 1;
+    padding: 12px 16px;
     border-radius: 10px;
     border: 1px solid rgba(255,255,255,0.1);
     outline: none;
@@ -328,6 +418,27 @@ hr {
 }
 .project-input:focus { border-color: #a4b465; }
 .project-input::placeholder { color: #888; }
+
+.remove-project-btn {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,100,100,0.3);
+    background: rgba(255,100,100,0.1);
+    color: #ff9999;
+    cursor: pointer;
+    font-size: 14px;
+}
+.remove-project-btn:hover { background: rgba(255,100,100,0.2); }
+
+.project-link-display {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #a4b465;
+    text-decoration: underline;
+}
 
 .btn-secondary {
     margin-top: 14px;
@@ -421,6 +532,20 @@ hr {
 .btn-generate:hover { opacity: 0.85; }
 .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
 
+.btn-pdf {
+    padding: 9px;
+    width: 100%;
+    border: 1px solid rgba(164, 180, 101, 0.5);
+    border-radius: 8px;
+    background: transparent;
+    color: #a4b465;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-pdf:hover { background: rgba(164, 180, 101, 0.12); }
+
 #cvLink {
     color: #a4b465;
     font-size: 11px;
@@ -428,4 +553,29 @@ hr {
     text-decoration: underline;
     display: block;
     text-align: center;
+}
+
+/* ===== ATS PDF (مخفي، يظهر فقط عند الطباعة/الحفظ كـ PDF) ===== */
+#atsPrintArea { display: none; }
+
+@media print {
+    body * { visibility: hidden; }
+    .editor-panel, .video-background, .overlay, .theme-bg { display: none !important; }
+    #atsPrintArea, #atsPrintArea * { visibility: visible; }
+    #atsPrintArea {
+        display: block;
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        background: #ffffff;
+        color: #111111;
+        padding: 30px 40px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    #atsPrintArea h1 { font-size: 24px; margin-bottom: 4px; }
+    #atsPrintArea h3 { font-size: 14px; font-weight: 500; color: #333; margin-bottom: 10px; }
+    #atsPrintArea h2 { font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #999; padding-bottom: 4px; margin: 18px 0 8px; }
+    #atsPrintArea p { font-size: 13px; line-height: 1.6; color: #222; margin-bottom: 6px; }
+    #atsPrintArea .contact-line { font-size: 12px; color: #444; margin-bottom: 14px; }
+    #atsPrintArea .project-line { margin-bottom: 8px; }
 }
