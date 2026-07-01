@@ -1,0 +1,581 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;1,800&family=Playwrite+NZ+Basic:wght@100..400&display=swap');
+
+/* ===== Reset ===== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #1a1f15;
+    min-height: 100vh;
+    display: flex;
+}
+
+/* ===== خلفية الفيديو (اختياري - يظهر فقط إذا رفع المستخدم فيديو) ===== */
+.video-background {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+    display: none; /* مخفي افتراضياً، يظهر فقط عند رفع فيديو مخصص */
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: -1;
+}
+
+/* ===== خلفيات متحركة حسب المجال (بديل الفيديو، Static بالكامل) ===== */
+.theme-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    background-size: 400% 400%;
+    animation: gradientFlow 18s ease infinite;
+}
+@keyframes gradientFlow {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.theme-general .theme-bg      { background-image: linear-gradient(135deg,#1a1f15,#535d0a,#a4b465,#1a1f15); }
+.theme-medical .theme-bg      { background-image: linear-gradient(135deg,#012a2d,#0f6d7a,#3fd0c9,#012a2d); }
+.theme-restaurant .theme-bg   { background-image: linear-gradient(135deg,#2b0a05,#7a1f0f,#d97b29,#2b0a05); }
+.theme-engineering .theme-bg  { background-image: linear-gradient(135deg,#1c1c1c,#3d3d3d,#e08b2f,#1c1c1c); }
+.theme-arts .theme-bg         { background-image: linear-gradient(135deg,#1a032b,#5c1a7a,#d63bce,#1a032b); }
+.theme-it .theme-bg           { background-image: linear-gradient(135deg,#020c14,#0a3b4d,#12e0c4,#020c14); }
+.theme-business .theme-bg     { background-image: linear-gradient(135deg,#0a0e1a,#1b2a4a,#c9a24b,#0a0e1a); }
+
+/* عندما يرفع المستخدم فيديو مخصص نخفي التدرج */
+body.has-custom-video .theme-bg { display: none; }
+body.has-custom-video .video-background { display: block; }
+
+/* ===== لوحة التحرير ===== */
+.editor-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 100vh;
+    overflow-y: auto;
+    background: rgba(10, 12, 8, 0.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-right: 1px solid rgba(164, 180, 101, 0.3);
+    padding: 24px 18px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.editor-title {
+    color: #a4b465;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+}
+
+.section-label {
+    color: #7c8a55;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 18px 0 8px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(164, 180, 101, 0.15);
+}
+.section-label:first-of-type { border-top: none; padding-top: 0; margin-top: 4px; }
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 12px;
+}
+
+.input-group label {
+    color: #c8d5a0;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-group input,
+.input-group select {
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(164, 180, 101, 0.25);
+    outline: none;
+    background: rgba(255, 255, 255, 0.07);
+    color: #f0f0f0;
+    font-size: 13px;
+    transition: border-color 0.2s;
+    font-family: inherit;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    border-color: #a4b465;
+    background: rgba(164, 180, 101, 0.08);
+}
+
+.input-group input::placeholder { color: #666; }
+
+.input-group select option { background: #1a1f15; color: #f0f0f0; }
+
+.file-label {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: rgba(164, 180, 101, 0.15);
+    border: 1px dashed rgba(164, 180, 101, 0.5);
+    color: #a4b465;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.2s;
+}
+.file-label:hover { background: rgba(164, 180, 101, 0.25); }
+
+.btn-primary {
+    margin-top: 8px;
+    padding: 11px;
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #6b7c2e, #a4b465);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: opacity 0.2s, transform 0.15s;
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ===== منطقة المعاينة ===== */
+.cv-preview {
+    margin-left: 300px;
+    flex: 1;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== Header ===== */
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 48px 0 28px;
+}
+
+/* ===== صورة البروفايل ===== */
+.profile-container {
+    position: relative;
+    width: 154px;
+    height: 154px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-container::before {
+    content: "";
+    position: absolute;
+    width: 174px;
+    height: 174px;
+    border-radius: 50%;
+    background: conic-gradient(#a4b465, #535d0a, #a4b465);
+    animation: rotateBorder 3s linear infinite;
+    z-index: 0;
+}
+
+@keyframes rotateBorder {
+    to { transform: rotate(360deg); }
+}
+
+.profile-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    position: relative;
+    z-index: 1;
+    border: 3px solid #1a1f15;
+}
+
+/* ===== اسم وعنوان ===== */
+.profile-name {
+    color: #ffffff;
+    font-size: 40px;
+    font-weight: 700;
+    text-align: center;
+    margin-top: 6px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+}
+
+.profile-title {
+    color: #a4b465;
+    font-size: 18px;
+    font-weight: 500;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+/* ===== أيقونات التواصل الاجتماعي ===== */
+.social-icons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(164, 180, 101, 0.12);
+    border: 1px solid rgba(164, 180, 101, 0.35);
+    color: #d4e080;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.15s, background 0.2s;
+}
+.social-icon:hover { transform: translateY(-2px); background: rgba(164, 180, 101, 0.28); }
+.social-icon svg { width: 18px; height: 18px; fill: currentColor; }
+
+/* ===== مشغل الصوت ===== */
+.audio-player {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(83, 93, 10, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(164, 180, 101, 0.35);
+    padding: 7px 16px;
+    border-radius: 30px;
+    width: 200px;
+}
+
+#audio { display: none; }
+
+#playBtn {
+    background: none;
+    border: none;
+    color: #d4e080;
+    font-size: 18px;
+    cursor: pointer;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.progress-container {
+    flex: 1;
+    height: 5px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: #a4b465;
+    border-radius: 5px;
+    transition: width 0.1s linear;
+}
+
+.btn-ai-voice {
+    padding: 7px 16px;
+    border-radius: 30px;
+    background: rgba(83, 93, 10, 0.55);
+    border: 1px solid rgba(164, 180, 101, 0.35);
+    color: #d4e080;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+}
+.btn-ai-voice:hover { background: rgba(164, 180, 101, 0.28); }
+
+/* ===== Navigation ===== */
+.navigation ul {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+    padding: 12px 32px;
+    border-radius: 30px;
+    border: 1px solid rgba(164, 180, 101, 0.2);
+    margin-top: 6px;
+}
+
+.navigation a {
+    color: #e8f0c8;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+}
+
+.navigation a:hover { color: #a4b465; }
+
+/* ===== HR ===== */
+hr {
+    border: none;
+    height: 2px;
+    width: 70%;
+    margin: 40px auto;
+    background: linear-gradient(90deg, transparent, #a4b465, transparent);
+    opacity: 0.6;
+    border-radius: 5px;
+}
+
+/* ===== Glass Sections ===== */
+.glass-box {
+    width: 65%;
+    margin: 0 auto 60px;
+    padding: 40px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: white;
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+}
+
+.glass-box h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #a4b465;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* ===== About Textarea ===== */
+.about-input {
+    width: 100%;
+    min-height: 180px;
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    resize: vertical;
+    outline: none;
+    background: rgba(255, 255, 255, 0.07);
+    color: white;
+    font-size: 15px;
+    line-height: 1.7;
+    transition: border-color 0.2s;
+}
+.about-input:focus { border-color: #a4b465; }
+.about-input::placeholder { color: #888; }
+
+/* ===== Projects ===== */
+.project-row {
+    display: flex;
+    gap: 8px;
+    margin: 8px 0;
+    align-items: center;
+}
+
+.project-input {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    outline: none;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+.project-input:focus { border-color: #a4b465; }
+.project-input::placeholder { color: #888; }
+
+.remove-project-btn {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,100,100,0.3);
+    background: rgba(255,100,100,0.1);
+    color: #ff9999;
+    cursor: pointer;
+    font-size: 14px;
+}
+.remove-project-btn:hover { background: rgba(255,100,100,0.2); }
+
+.project-link-display {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #a4b465;
+    text-decoration: underline;
+}
+
+.btn-secondary {
+    margin-top: 14px;
+    padding: 10px 24px;
+    border: 1px solid rgba(164, 180, 101, 0.5);
+    border-radius: 10px;
+    background: rgba(164, 180, 101, 0.1);
+    color: #a4b465;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+}
+.btn-secondary:hover {
+    background: rgba(164, 180, 101, 0.22);
+    transform: translateY(-1px);
+}
+
+/* ===== Scrollbar ===== */
+.editor-panel::-webkit-scrollbar { width: 4px; }
+.editor-panel::-webkit-scrollbar-thumb { background: rgba(164,180,101,0.3); border-radius: 4px; }
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    body { flex-direction: column; }
+
+    .editor-panel {
+        position: relative;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(164, 180, 101, 0.3);
+    }
+
+    .cv-preview { margin-left: 0; }
+
+    .glass-box { width: 90%; padding: 24px; }
+
+    .profile-name { font-size: 28px; }
+
+    .navigation ul { gap: 1rem; padding: 10px 20px; flex-wrap: wrap; justify-content: center; }
+}
+
+/* ===== Generate Box ===== */
+.generate-box {
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 12px;
+    background: rgba(164, 180, 101, 0.08);
+    border: 1px solid rgba(164, 180, 101, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.generate-title {
+    color: #a4b465;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.generate-input {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(164, 180, 101, 0.25);
+    outline: none;
+    background: rgba(255, 255, 255, 0.07);
+    color: #f0f0f0;
+    font-size: 13px;
+    width: 100%;
+}
+.generate-input:focus {
+    border-color: #a4b465;
+}
+.generate-input::placeholder { color: #555; }
+
+.btn-generate {
+    padding: 9px;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    background: #a4b465;
+    color: #1a1f15;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.btn-generate:hover { opacity: 0.85; }
+.btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-pdf {
+    padding: 9px;
+    width: 100%;
+    border: 1px solid rgba(164, 180, 101, 0.5);
+    border-radius: 8px;
+    background: transparent;
+    color: #a4b465;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-pdf:hover { background: rgba(164, 180, 101, 0.12); }
+
+#cvLink {
+    color: #a4b465;
+    font-size: 11px;
+    word-break: break-all;
+    text-decoration: underline;
+    display: block;
+    text-align: center;
+}
+
+/* ===== ATS PDF (مخفي، يظهر فقط عند الطباعة/الحفظ كـ PDF) ===== */
+#atsPrintArea { display: none; }
+
+@media print {
+    body * { visibility: hidden; }
+    .editor-panel, .video-background, .overlay, .theme-bg { display: none !important; }
+    #atsPrintArea, #atsPrintArea * { visibility: visible; }
+    #atsPrintArea {
+        display: block;
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        background: #ffffff;
+        color: #111111;
+        padding: 30px 40px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    #atsPrintArea h1 { font-size: 24px; margin-bottom: 4px; }
+    #atsPrintArea h3 { font-size: 14px; font-weight: 500; color: #333; margin-bottom: 10px; }
+    #atsPrintArea h2 { font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #999; padding-bottom: 4px; margin: 18px 0 8px; }
+    #atsPrintArea p { font-size: 13px; line-height: 1.6; color: #222; margin-bottom: 6px; }
+    #atsPrintArea .contact-line { font-size: 12px; color: #444; margin-bottom: 14px; }
+    #atsPrintArea .project-line { margin-bottom: 8px; }
+}
